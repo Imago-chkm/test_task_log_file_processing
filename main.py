@@ -15,10 +15,9 @@ def group_by_url(log_data):
     url_data = {}
     for log in log_data:
         url = log['url']
-        response_time = float(log['response_time'])
         if url not in url_data:
             url_data[url] = []
-        url_data[url].append(response_time)
+        url_data[url].append(float(log['response_time']))
     return url_data
 
 
@@ -37,7 +36,7 @@ def print_table(data):
     """Функция отвечает за вывод данных в виде таблицы."""
     print(tabulate(
         data,
-        headers=['URL', 'Total Requests', 'Average response time'],
+        headers=['URL', 'Total requests', 'Average response time'],
         tablefmt='grid'
     ))
 
