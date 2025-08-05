@@ -50,3 +50,20 @@ def test_calculate_average_response_time(url_data, expected):
         url, count, response_time
     ) for url, count, response_time in expected]
     assert result_rounded == expected_rounded
+
+
+def test_parse_two_log_file(
+    test_log_file,
+    test_log_second_file,
+    test_log_data
+):
+    """Проверяет корректное открытие и парсинг двух файлов сразу."""
+    log_data_1 = parse_log_file(test_log_file)
+    log_data_2 = parse_log_file(test_log_second_file)
+    combined_data = log_data_1 + log_data_2
+    assert len(combined_data) == len(test_log_data) * 2
+    assert combined_data[:len(test_log_data)] == test_log_data
+    assert combined_data[len(test_log_data):] == test_log_data
+    assert combined_data[0]['url'] == '/api/context/...'
+    assert combined_data[0]['response_time'] == 0.024
+    assert combined_data[-1]['url'] == '/api/homeworks/...'

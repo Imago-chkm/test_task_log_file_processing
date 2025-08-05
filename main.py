@@ -37,18 +37,36 @@ def print_table(data):
     print(tabulate(
         data,
         headers=['URL', 'Total requests', 'Average response time'],
-        tablefmt='grid'
+        tablefmt='simple'
     ))
 
 
 def main():
     """Основная логика работы скрипта."""
     parser = argparse.ArgumentParser(description='Обработка лог-файла')
-    parser.add_argument('--file', required=True, help='Путь к лог-файлу')
-    parser.add_argument('--report', default="average", choices=['average'], help='Тип отчета')
+    parser.add_argument(
+        '--file',
+        required=True,
+        nargs='+',
+        help='Путь к лог-файлу'
+    )
+    parser.add_argument(
+        '--report',
+        default='average',
+        choices=['average'],
+        help='Тип отчета'
+    )
     args = parser.parse_args()
 
-    log_data = parse_log_file(args.file)
+    log_data = []
+    for file in args.file:
+        try:
+            file_log_data = parse_log_file(file)
+            log_data.extend(file_log_data)
+        except Exception as e:
+            print(f'Ошибка чтения {file}: {e}')
+            continue
+
     url_data = group_by_url(log_data)
 
     if args.report == "average":
